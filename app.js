@@ -32,6 +32,13 @@ app.use('/media', express.static(path.join(__dirname, 'public', 'media')));
 const videos = require('./routes/videosRoutes');
 app.use('/api/videos', videos);
 
+
+const users = require('./routes/usersRoutes');
+app.use('/api/users', users);
+
+const token = require('./routes/tokenRoutes');
+app.use('/api/token', token);
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -41,3 +48,4 @@ app.listen(PORT, async () => {
     const { default: open } = await import('open');
   open(`http://localhost:${PORT}`);
 });
+
