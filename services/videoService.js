@@ -2,7 +2,8 @@ const Video = require('../models/videoSchema');
 
 const createVideo = async (title, description, uploader, duration, videoUrl) => {
     const maxId = await getMaxVideoId();
-    const video = new Video({id: maxId, title : title, description : description, uploader : uploader, duration : duration, videoUrl : videoUrl});
+    const todayDateString = formatDate(new Date());
+    const video = new Video({id: maxId, title : title, description : description, uploader : uploader, duration : duration, date : todayDateString, videoUrl : videoUrl});
     return await video.save();
 }
 
@@ -12,6 +13,10 @@ const getVideos = async () => {
 
 const getVideoById = async (id) => {
     return await Video.findOne({id: id});
+};
+
+const getVideosByUploader = async (uploader) => {
+    return await Video.findMany({uploader: uploader});
 };
 
 const updateVideo = async (id, title, description) => {
@@ -35,4 +40,12 @@ const getMaxVideoId = async () => {
     return maxIdVideo ? maxIdVideo.id : 0;
 };
 
-module.exports = {createVideo, getVideoById, getVideos, updateVideo, deleteVideo }
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+module.exports = {createVideo, getVideoById, getVideosByUploader, getVideos, updateVideo, deleteVideo, formatDate  }
