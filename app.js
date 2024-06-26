@@ -29,6 +29,6 @@ app.use(express.static('public'));
 app.use('/media', express.static('public/media'));
 
 const videos = require('./routes/videosRoutes');
-app.use('/videos', videos);
+app.use('/api/videos', videos);
 
 app.listen(process.env.PORT);

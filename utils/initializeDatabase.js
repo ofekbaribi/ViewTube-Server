@@ -22,7 +22,7 @@ const initialVideos = [
         videoUrl: "/media/deep.mp4"
     },
     {
-        title: "Harbu Darbu (Prod. By Stilla)",
+        title: "Harbu Darbu (Prod. By Stilla)2",
         description: "harbu darbu",
         uploader: "Ness Ve Stilla",
         views: 40,
