@@ -24,11 +24,16 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 });;
 
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/media', express.static(path.join(__dirname, 'public', 'media')));
 
-app.use(express.static('public'));
-app.use('/media', express.static('public/media'));
 
 const videos = require('./routes/videosRoutes');
 app.use('/api/videos', videos);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.listen(process.env.PORT);
