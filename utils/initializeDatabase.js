@@ -1,4 +1,5 @@
 const Video = require('../models/videoSchema');
+const { formatDate } = require('../services/videoService');
 
 const initialVideos = [
     {
@@ -8,7 +9,7 @@ const initialVideos = [
         uploader: "Ofek Baribi",
         views: 460,
         likes: 6,
-        date: new Date("2021-05-26"),
+        date: formatDate("2020-04-26"),
         duration: 5083,
         videoUrl: "/media/feel.mp4"
     },
@@ -19,7 +20,7 @@ const initialVideos = [
         uploader: "Ziv Elbaz",
         views: 100,
         likes: 354,
-        date: new Date("2021-05-26"),
+        date: formatDate("2021-05-26"),
         duration: 4223,
         videoUrl: "/media/deep.mp4"
     },
@@ -30,7 +31,7 @@ const initialVideos = [
         uploader: "Ness Ve Stilla",
         views: 40,
         likes: 200,
-        date: new Date("2021-05-26"),
+        date: formatDate("2021-05-26"),
         duration: 3159,
         videoUrl: "/media/video2.mp4"
     },
@@ -41,7 +42,7 @@ const initialVideos = [
         uploader: "Author 404",
         views: 999,
         likes: 200,
-        date: new Date("2021-05-26"),
+        date: formatDate("2021-05-26"),
         duration: 4223,
         videoUrl: "/media/wrong.mp4"
     },
@@ -52,7 +53,7 @@ const initialVideos = [
         uploader: "CS biu",
         views: 111,
         likes: 1111,
-        date: new Date("2021-11-11"),
+        date: formatDate("2021-11-11"),
         duration: 4271,
         videoUrl: "/media/mountains.mp4"
     },
@@ -63,7 +64,7 @@ const initialVideos = [
         uploader: "Maroon 5",
         views: 106,
         likes: 124,
-        date: new Date("2024-01-19"),
+        date: formatDate("2024-01-19"),
         duration: 191,
         videoUrl: "/media/payphone.mp4"
     },
@@ -74,7 +75,7 @@ const initialVideos = [
         uploader: "Calvin Harris",
         views: 106,
         likes: 124,
-        date: new Date("2024-01-19"),
+        date: formatDate("2024-01-19"),
         duration: 191,
         videoUrl: "/media/summer.mp4"
     },
@@ -85,7 +86,7 @@ const initialVideos = [
         uploader: "CS biu",
         views: 106,
         likes: 124,
-        date: new Date("2024-01-19"),
+        date: formatDate("2024-01-19"),
         duration: 191,
         videoUrl: "/media/wake.mp4"
     },
@@ -96,7 +97,7 @@ const initialVideos = [
         uploader: "CS biu",
         views: 106,
         likes: 124,
-        date: new Date("2024-01-19"),
+        date: formatDate("2024-01-19"),
         duration: 191,
         videoUrl: "/media/whistle.mp4"
     },
@@ -107,7 +108,7 @@ const initialVideos = [
         uploader: "CS biu",
         views: 106,
         likes: 124,
-        date: new Date("2024-01-19"),
+        date: formatDate("2024-01-19"),
         duration: 191,
         videoUrl: "/media/shape.mp4"
     }

@@ -36,4 +36,8 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(process.env.PORT);
+const PORT = process.env.PORT
+app.listen(PORT, async () => {
+    const { default: open } = await import('open');
+  open(`http://localhost:${PORT}`);
+});
