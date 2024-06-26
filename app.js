@@ -32,6 +32,9 @@ app.use('/media', express.static(path.join(__dirname, 'public', 'media')));
 const videos = require('./routes/videosRoutes');
 app.use('/api/videos', videos);
 
+const comments = require('./routes/commentsRoutes');
+app.use('/api/comments', comments);
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
