@@ -31,4 +31,10 @@ app.use('/media', express.static('public/media'));
 const videos = require('./routes/videosRoutes');
 app.use('/api/videos', videos);
 
+const users = require('./routes/usersRoutes');
+app.use('/api/users', users);
+
+const token = require('./routes/tokenRoutes');
+app.use('/api/token', token);
+
 app.listen(process.env.PORT);
