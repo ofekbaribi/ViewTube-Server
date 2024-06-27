@@ -9,13 +9,12 @@ const createComment = async (req, res) => {
 };
 
 const getCommentsByVideoId = async (req, res) => {
-  try {
-    const { videoId } = req.params;
-    const comments = await commentService.getCommentsByVideoId(videoId);
-    res.json(comments ? comments : []);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    const comment = await commentService.getCommentsByVideoId(req.params.videoId);
+    if (!comment) {
+    return res.status(404).json({ errors: ['comments not found'] });
+    }
+
+    res.json(comment);
 };
 
 const updateComment = async (req, res) => {

@@ -16,7 +16,7 @@ const getVideoById = async (id) => {
 };
 
 const getVideosByUploader = async (uploader) => {
-    return await Video.findMany({uploader: uploader});
+    return await Video.find({uploader: uploader});
 };
 
 const updateVideo = async (id, title, description) => {
