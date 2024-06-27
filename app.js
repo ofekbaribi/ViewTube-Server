@@ -35,6 +35,12 @@ app.use('/api/videos', videos);
 const comments = require('./routes/commentsRoutes');
 app.use('/api/comments', comments);
 
+const users = require('./routes/usersRoutes');
+app.use('/api/users', users);
+
+const token = require('./routes/tokenRoutes');
+app.use('/api/token', token);
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -44,3 +50,4 @@ app.listen(PORT, async () => {
     const { default: open } = await import('open');
   open(`http://localhost:${PORT}`);
 });
+
