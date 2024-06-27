@@ -1,13 +1,12 @@
 const Comment = require('../models/commentSchema');
 
 const createComment = async (id, text, uploader, videoId) => {
-  const uploaderName = uploader === 'anonymous' ? 'Guest' : uploader;
-  const comment = new Comment({id: id, text: text, uploader : uploaderName, videoId : videoId});
+  const comment = new Comment({id: id, text: text, uploader: uploader, videoId: videoId});
   return await comment.save();
 };
 
 const getCommentsByVideoId = async (videoId) => {
-  return await Comment.findMany({ videoId: videoId });
+  return await Comment.find({ videoId: videoId });
 };
 
 const updateComment = async (id, text) => {
