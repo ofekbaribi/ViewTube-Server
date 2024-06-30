@@ -56,4 +56,21 @@ const checkUsernameExists = async (req, res) => {
     }
   };
 
-module.exports = {createUser, getUserByUsername, updateUser, deleteUser, checkUsernameExists};
+  const getPictureByUsername = async (req, res) => {
+    try {
+      const username = req.params.username;
+      const profilePicture = await UserService.getPictureByUsername(username);
+      res.status(200).json({ profilePicture });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+module.exports = {
+  createUser, 
+  getUserByUsername, 
+  updateUser, 
+  deleteUser, 
+  checkUsernameExists,
+  getPictureByUsername,
+};

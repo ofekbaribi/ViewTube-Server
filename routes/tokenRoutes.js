@@ -1,9 +1,11 @@
 const express = require('express');
-const { loginUser, verifyToken } = require('../controllers/tokenController');
+const { loginUser, verifyUserToken } = require('../controllers/tokenController');
 const router = express.Router();
 
 // Define route for logging in
 router.post('/', loginUser);
-router.post('/verifyToken', verifyToken);
+
+// Define route for verifying token
+router.post('/verifyToken', verifyUserToken);
 
 module.exports = router;

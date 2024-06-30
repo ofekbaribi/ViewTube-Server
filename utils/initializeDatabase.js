@@ -17,7 +17,7 @@ const initialVideos = [
         id: 2,
         title: "Feel So Close x Roses x Summer x I Love It MASHUP",
         description: "Summer Mashup Vol.1 (Feel so Close Hudszn Remix)",
-        uploader: "Ziv Elbaz",
+        uploader: "zivelbaz",
         views: 100,
         likes: 354,
         date: formatDate("2021-05-26"),
