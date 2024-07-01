@@ -46,6 +46,22 @@ const formatDate = (dateString) => {
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
-  };
+};
 
-module.exports = {createVideo, getVideoById, getVideosByUploader, getVideos, updateVideo, deleteVideo, formatDate  }
+const userLiked = async (id, username) => {
+    const video = await getVideoById(id);
+    if (!video) {
+        throw new Error('Video not found');
+    }
+    if (video.likedBy.includes(username)) {
+        video.likes--;
+        video.likedBy = video.likedBy.filter(likedBy => likedBy !== username);
+    } else {
+        video.likes++;
+        video.likedBy.push(username);
+    }
+    await video.save();
+    return true;
+};
+
+module.exports = {createVideo, getVideoById, getVideosByUploader, getVideos, updateVideo, deleteVideo, formatDate, userLiked };

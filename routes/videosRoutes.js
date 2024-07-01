@@ -11,4 +11,7 @@ router.route('/:id')
     .patch(videoController.updateVideo)
     .delete(videoController.deleteVideo);
 
+router.route('/:id/like')
+    .post(videoController.userLiked);
+
 module.exports = router;

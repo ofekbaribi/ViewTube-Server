@@ -18,11 +18,22 @@ const getVideo = async (req, res) => {
 };
 
 const updateVideo = async (req, res) => {
-    const video = await videoService.updateVideo(req,param.id, req.body.title, req.body.description);
+    const video = await videoService.updateVideo(req.param.id, req.body.title, req.body.description);
     if(!video) {
         return res.status(404).json({ errors: ['Video not found'] });
     }
     res.json(video);
+};
+
+const userLiked = async (req, res) => {
+    const { id } = req.params;
+    const { username } = req.body;
+    try {
+        const liked = await videoService.userLiked(id, username);
+        res.json({ liked });
+    } catch (error) {
+        res.status(500).json({ errors: [error.message] });
+    }
 };
 
 const deleteVideo = async (req, res) => {
@@ -33,4 +44,4 @@ const deleteVideo = async (req, res) => {
     res.json(video);
 }
 
-module.exports = {createVideo, getVideos, getVideo, updateVideo, deleteVideo };
+module.exports = {createVideo, getVideos, getVideo, updateVideo, deleteVideo, userLiked};
