@@ -21,7 +21,9 @@ const getVideosByUploader = async (uploader) => {
 
 const updateVideo = async (id, title, description) => {
     const video = await getVideoById(id);
-    if (!video) return null;
+    if (!video) { 
+        return null;
+    }
     video.title = title;
     video.description = description;
     await video.save();
