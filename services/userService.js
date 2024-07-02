@@ -1,6 +1,5 @@
 const User = require('../models/userSchema'); // Import the User model
-const bcrypt = require('bcrypt');
-const { generateToken } = require('../controllers/tokenController');
+const bcrypt = require('bcryptjs');
 
 // Create a new user
 const createUser = async (userData) => {
@@ -13,7 +12,8 @@ const createUser = async (userData) => {
     await user.save();
 
     // Generate a token for the user
-    const token = generateToken(user);
+    const tokenController = require('../controllers/tokenController');
+    const token = tokenController.generateToken(user);
 
     return { user, token };
   } catch (error) {
@@ -45,6 +45,7 @@ const getUserByUsername = async (username) => {
     if (!user) {
       throw new Error('User not found');
     }
+    user.password = null;
     return user;
   } catch (error) {
     throw new Error(`Error fetching user: ${error.message}`);
@@ -79,13 +80,22 @@ const deleteUser = async (username) => {
 
 // Check if a username exists
 const checkUsernameExists = async (username) => {
-    try {
-      const user = await User.findOne({ username: username });
-      return user? true: false;
-    } catch (error) {
-      throw new Error(`Error checking username: ${error.message}`);
-    }
-  };
+  try {
+    const user = await User.findOne({ username });
+    return user ? true : false;
+  } catch (error) {
+    throw new Error(`Error checking username: ${error.message}`);
+  }
+};
+
+const getPictureByUsername = async (username) => {
+  try {
+    const user = await User.findOne({ username: username });
+    return user ? user.image : null;
+  } catch (error) {
+    throw new Error(`Error fetching user's profile picture: ${error.message}`);
+  }
+};
 
 module.exports = {
   createUser,
@@ -94,4 +104,5 @@ module.exports = {
   updateUser,
   deleteUser,
   checkUsernameExists,
+  getPictureByUsername,
 };
