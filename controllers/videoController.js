@@ -1,8 +1,16 @@
 const videoService = require('../services/videoService');
 
 const createVideo = async (req, res) => {
-    res.json(await videoService.createVideo(req.body.title, req.body.description, req.body.uploader, req.body.duration, req.body.videoUrl));
-};
+    try {
+      const { title, description, duration, uploader } = req.body; // Access the uploader from the body
+      const videoUrl = req.file.path;
+
+      const newVideo = await videoService.createVideo(title, description, uploader, duration, videoUrl);
+      res.status(201).json(newVideo);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 
 const getVideos = async (_, res) => {
     res.json(await videoService.getVideos());

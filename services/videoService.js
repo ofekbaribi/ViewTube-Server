@@ -1,9 +1,19 @@
 const Video = require('../models/videoSchema');
+const fs = require('fs');
+const path = require('path');
 
 const createVideo = async (title, description, uploader, duration, videoUrl) => {
-    const maxId = await getMaxVideoId();
+    const maxId = await getMaxVideoId() + 1;
     const todayDateString = formatDate(new Date());
-    const video = new Video({id: maxId, title : title, description : description, uploader : uploader, duration : duration, date : todayDateString, videoUrl : videoUrl});
+    const video = new Video({
+        id: maxId,
+        title: title,
+        description: description,
+        uploader: uploader,
+        duration: duration,
+        date: todayDateString,
+        videoUrl: `/uploads/${videoUrl.split('\\')[videoUrl.split('\\').length - 1]}`
+    });
     return await video.save();
 }
 
@@ -20,7 +30,7 @@ const getVideosByUploader = async (uploader) => {
 };
 
 const updateVideo = async (id, title, description) => {
-    const video = await getVideoById(id);
+    const video = await getVideoById(id);   
     if (!video) { 
         return null;
     }
@@ -30,9 +40,17 @@ const updateVideo = async (id, title, description) => {
     return video;
 };
 
-const deleteVideo= async (id) => {
+const deleteVideo = async (id) => {
     const video = await getVideoById(id);
     if (!video) return null;
+
+    const videoPath = path.join(__dirname, '..', 'public', video.videoUrl);
+    fs.unlink(videoPath, (err) => {
+        if (err) {
+            console.error('Error deleting video file:', err);
+        }
+    });
+
     await video.deleteOne();
     return video;
 };

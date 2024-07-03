@@ -32,7 +32,7 @@ const Video = new Schema({
         default: 0
     },
     duration: {
-        type: Number,
+        type: String,
         required: true
     },
     date: {
