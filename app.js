@@ -1,5 +1,14 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+
 var app = express();
+
+const uploadsDir = path.join(__dirname, 'public','uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+  console.log('Created uploads directory');
+}
 
 const bodyParser = require('body-parser');
 
@@ -26,7 +35,6 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 });;
 
 
-const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/media', express.static(path.join(__dirname, 'public', 'media')));
 
