@@ -1,6 +1,7 @@
 const Video = require('../models/videoSchema');
 const fs = require('fs');
 const path = require('path');
+const Comment = require('../models/commentSchema');
 
 const createVideo = async (title, description, uploader, duration, videoUrl) => {
     const maxId = await getMaxVideoId() + 1;
@@ -42,7 +43,11 @@ const updateVideo = async (id, title, description) => {
 
 const deleteVideo = async (id) => {
     const video = await getVideoById(id);
-    if (!video) return null;
+    if (!video) { 
+        return null;
+    }
+
+    await Comment.deleteMany({ videoId: id });
 
     const videoPath = path.join(__dirname, '..', 'public', video.videoUrl);
     fs.unlink(videoPath, (err) => {

@@ -1,5 +1,9 @@
 const User = require('../models/userSchema'); // Import the User model
+const Comment = require('../models/commentSchema'); // Import the Comment model
+const Video = require('../models/videoSchema'); // Import the Video model
+const VideoService = require('./videoService'); // Import the video service
 const bcrypt = require('bcryptjs');
+const { get } = require('mongoose');
 
 // Create a new user
 const createUser = async (userData) => {
@@ -53,12 +57,16 @@ const getUserByUsername = async (username) => {
 };
 
 // Update a user by username
-const updateUser = async (username, updates) => {
+const updateUser = async (username, firstName, lastName) => {
   try {
-    const user = await User.findOneAndUpdate({ username }, updates, { new: true });
+    const user = await User.findOne({ username });
     if (!user) {
       throw new Error('User not found');
     }
+    user.firstName = firstName;
+    user.lastName = lastName;
+    await user.save();
+    console.log("service: ", user);
     return user;
   } catch (error) {
     throw new Error(`Error updating user: ${error.message}`);
@@ -72,6 +80,16 @@ const deleteUser = async (username) => {
     if (!user) {
       throw new Error('User not found');
     }
+
+    // Delete all videos and comments by the user
+    const userVideos = await VideoService.getVideosByUsername(username);
+    if (!userVideos) {
+      for (const video of userVideos) {
+        await VideoService.deleteVideo(video.id);
+      }
+    }
+    await Comment.deleteMany({ uploader: username });
+
     return user;
   } catch (error) {
     throw new Error(`Error deleting user: ${error.message}`);
@@ -97,6 +115,21 @@ const getPictureByUsername = async (username) => {
   }
 };
 
+const updatePassword = async (username, newPassword) => {
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const user = await User.findOne({ username: username});
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.password = hashedPassword;
+    await user.save();
+    return user;
+  } catch (error) {
+    throw new Error(`Error updating password: ${error.message}`);
+  }
+};
+
 module.exports = {
   createUser,
   authenticateUser,
@@ -105,4 +138,5 @@ module.exports = {
   deleteUser,
   checkUsernameExists,
   getPictureByUsername,
+  updatePassword,
 };
