@@ -55,4 +55,12 @@ const deleteVideo = async (req, res) => {
     res.json(video);
 }
 
-module.exports = {createVideo, getVideos, getVideo, updateVideo, deleteVideo, userLiked};
+const addViewCount = async (req, res) => {
+    const video = await videoService.addViewCount(req.params.id);
+    if (!video) {
+        return res.status(404).json({ errors: ['Video not found'] });
+    }
+    res.json(video);
+};
+
+module.exports = {createVideo, getVideos, getVideo, updateVideo, deleteVideo, userLiked, addViewCount};

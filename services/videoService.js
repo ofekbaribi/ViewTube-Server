@@ -84,4 +84,14 @@ const userLiked = async (id, username) => {
     return true;
 };
 
-module.exports = {createVideo, getVideoById, getVideosByUploader, getVideos, updateVideo, deleteVideo, formatDate, userLiked };
+const addViewCount = async (id) => {
+    const video = await getVideoById(id);
+    if (!video) {
+        throw new Error('Video not found');
+    }
+    video.views++;
+    await video.save();
+    return video;
+};
+
+module.exports = {createVideo, getVideoById, getVideosByUploader, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount };
