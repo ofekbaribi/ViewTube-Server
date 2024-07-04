@@ -27,9 +27,28 @@ const getUserByUsername = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const username = req.params.username;
-    const updates = req.body;
-    const user = await UserService.updateUser(username, updates);
+    const { firstName, lastName } = req.body;
+    console.log(username, firstName, lastName);
+    const user = await UserService.updateUser(username, firstName, lastName);
+    console.log("controller: ", user);
     res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const updatePassword = async (req, res) => {
+  try {
+    const { username, currentPassword, newPassword } = req.body;
+    const verifyUser = await UserService.authenticateUser(username, currentPassword);
+    if (!verifyUser) { 
+      res.status(401).json({ error: 'Invalid password' });
+      return;
+    }
+    const user = await UserService.updatePassword(username, newPassword);
+    const token = generateToken(user);
+    user.password = null;
+    res.status(200).json({user: user, token: token});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -73,4 +92,5 @@ module.exports = {
   deleteUser, 
   checkUsernameExists,
   getPictureByUsername,
+  updatePassword,
 };
