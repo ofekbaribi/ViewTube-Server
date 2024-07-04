@@ -36,4 +36,7 @@ router.route('/:id')
 router.route('/:id/like')
     .post(videoController.userLiked);
 
+router.route('/:id/view')
+    .patch(videoController.addViewCount);
+
 module.exports = router;
