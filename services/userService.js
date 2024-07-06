@@ -75,26 +75,30 @@ const updateUser = async (username, firstName, lastName) => {
 
 // Delete a user by username
 const deleteUser = async (username) => {
-  try {
-    const user = await User.findOneAndDelete({ username });
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    // Delete all videos and comments by the user
-    const userVideos = await VideoService.getVideosByUsername(username);
-    if (!userVideos) {
-      for (const video of userVideos) {
-        await VideoService.deleteVideo(video.id);
+    try {
+      // Delete videos first
+      const userVideos = await VideoService.getVideosByUsername(username);
+      if (userVideos) {
+        for (const video of userVideos) {
+          await VideoService.deleteVideo(video.id);
+        }
       }
+  
+      // Delete comments
+      await Comment.deleteMany({ uploader: username });
+  
+      // Delete user
+      const user = await User.findOneAndDelete({ username });
+      if (!user) {
+        throw new Error('User not found');
+      }
+  
+      return user;
+    } catch (error) {
+      throw new Error(`Error deleting user: ${error.message}`);
     }
-    await Comment.deleteMany({ uploader: username });
-
-    return user;
-  } catch (error) {
-    throw new Error(`Error deleting user: ${error.message}`);
-  }
-};
+  };
+  
 
 // Check if a username exists
 const checkUsernameExists = async (username) => {
