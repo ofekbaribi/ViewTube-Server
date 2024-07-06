@@ -56,14 +56,21 @@ const updatePassword = async (req, res) => {
 
 // Controller method to handle deleting a user by username
 const deleteUser = async (req, res) => {
-  try {
-    const username = req.params.username;
-    const user = await UserService.deleteUser(username);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+    try {
+      const { username } = req.params;
+  
+      // Delete user logic
+      const deletedUser = await UserService.deleteUser(username);
+      if (!deletedUser) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      res.status(200).json(deletedUser);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ error: error.message });
+    }
+  };
 
 const checkUsernameExists = async (req, res) => {
     try {
