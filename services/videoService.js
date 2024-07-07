@@ -1,147 +1,102 @@
-// UserContext.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import tokenVerification from '../tokenAuth/tokenVerification';
-import { useVideos } from './VideosContext'; // Import VideosContext
+const Video = require('../models/videoSchema');
+const fs = require('fs');
+const path = require('path');
+const Comment = require('../models/commentSchema');
 
-const UserContext = createContext();
+const createVideo = async (title, description, uploader, duration, videoUrl) => {
+    const maxId = await getMaxVideoId() + 1;
+    const todayDateString = formatDate(new Date());
+    const video = new Video({
+        id: maxId,
+        title: title,
+        description: description,
+        uploader: uploader,
+        duration: duration,
+        date: todayDateString,
+        videoUrl: `/uploads/${videoUrl.split('\\')[videoUrl.split('\\').length - 1]}`
+    });
+    return await video.save();
+}
 
-export const UserProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const { deleteVideoByUser } = useVideos(); // Use deleteVideoByUser function from VideosContext
-
-  const setUser = (user) => {
-    setCurrentUser(user);
-  };
-
-  const logout = () => {
-    localStorage.removeItem('jwtToken');
-    setCurrentUser(null);
-  };
-
-  const getProfilePicture = async (username) => {
-    try {
-      const response = await axios.get(`http://localhost:12345/api/users/picture/${username}`);
-      if (response.status === 200) {
-        return response.data.profilePicture;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error fetching profile picture:', error);
-      return null;
-    }
-  };
-
-  const deleteUser = async (username) => {
-    try {
-      const response = await axios.delete(`http://localhost:12345/api/users/${username}`);
-      if (response.status === 200) {
-        logout();
-        deleteVideoByUser(currentUser.id); 
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      return false;
-    }
-  };
-
-  const getUserData = async (username) => {
-    try {
-      const response = await axios.get(`http://localhost:12345/api/users/${username}`);
-      if (response.status === 200) {
-        return response.data;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-      return null;
-    }
-  };
-
-  const verifyToken = async () => {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      const userData = await tokenVerification(token);
-      if (userData) {
-        setCurrentUser(userData);
-      } else {
-        logout();
-      }
-    }
-  };
-
-  const verifyTokenBeforeVideoUpload = async () => {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      return await tokenVerification(token);
-    }
-  };
-
-  const updateUserData = async (username, firstName, lastName) => {
-    try {
-      const response = await axios.put(`http://localhost:12345/api/users/${username}`, { firstName, lastName });
-      if (response.status === 200) {
-        setCurrentUser(response.data);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Error updating user data:', error);
-      return false;
-    }
-  };
-
-  const updateUserPassword = async (username, currentPassword, newPassword) => {
-    try {
-      const response = await axios.post('http://localhost:12345/api/users/password', {
-        username,
-        currentPassword,
-        newPassword,
-      });
-      if (response.status === 200) {
-        setCurrentUser(response.data.user);
-        localStorage.setItem('jwtToken', response.data.token);
-        console.log(response.data.token);
-        console.log(response.data.user);
-      }
-      return response.status;
-    } catch (error) {
-      console.error('Error updating user password:', error);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    verifyToken();
-
-    // Set up an interval to verify the token every 5 minutes
-    const interval = setInterval(verifyToken, 300000);
-
-    // Clean up the timeout and interval on component unmount
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  return (
-    <UserContext.Provider
-      value={{
-        currentUser,
-        setUser,
-        logout,
-        getProfilePicture,
-        verifyTokenBeforeVideoUpload,
-        getUserData,
-        updateUserData,
-        updateUserPassword,
-        deleteUser,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+const getVideos = async () => { 
+    return await Video.find({}); 
 };
 
-export const useUser = () => useContext(UserContext);
+const getVideoById = async (id) => {
+    return await Video.findOne({id: id});
+};
+
+const getVideosByUploader = async (uploader) => {
+    return await Video.find({uploader: uploader});
+};
+
+const updateVideo = async (id, title, description) => {
+    const video = await getVideoById(id);   
+    if (!video) { 
+        return null;
+    }
+    video.title = title;
+    video.description = description;
+    await video.save();
+    return video;
+};
+
+const deleteVideo = async (id) => {
+    const video = await getVideoById(id);
+    if (!video) { 
+        return null;
+    }
+
+    await Comment.deleteMany({ videoId: id });
+
+    const videoPath = path.join(__dirname, '..', 'public', video.videoUrl);
+    fs.unlink(videoPath, (err) => {
+        if (err) {
+            console.error('Error deleting video file:', err);
+        }
+    });
+
+    await video.deleteOne();
+    return video;
+};
+
+const getMaxVideoId = async () => {
+    const maxIdVideo = await Video.findOne().sort({ id: -1 }).exec();
+    return maxIdVideo ? maxIdVideo.id : 0;
+};
+
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+};
+
+const userLiked = async (id, username) => {
+    const video = await getVideoById(id);
+    if (!video) {
+        throw new Error('Video not found');
+    }
+    if (video.likedBy.includes(username)) {
+        video.likes--;
+        video.likedBy = video.likedBy.filter(likedBy => likedBy !== username);
+    } else {
+        video.likes++;
+        video.likedBy.push(username);
+    }
+    await video.save();
+    return true;
+};
+
+const addViewCount = async (id) => {
+    const video = await getVideoById(id);
+    if (!video) {
+        throw new Error('Video not found');
+    }
+    video.views++;
+    await video.save();
+    return video;
+};
+
+module.exports = {createVideo, getVideoById, getVideosByUploader, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount };

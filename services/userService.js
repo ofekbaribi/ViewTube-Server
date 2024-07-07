@@ -77,7 +77,7 @@ const updateUser = async (username, firstName, lastName) => {
 const deleteUser = async (username) => {
     try {
       // Delete videos first
-      const userVideos = await VideoService.getVideosByUsername(username);
+      const userVideos = await VideoService.getVideosByUploader(username);
       if (userVideos) {
         for (const video of userVideos) {
           await VideoService.deleteVideo(video.id);
