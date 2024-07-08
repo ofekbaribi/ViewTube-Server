@@ -3,7 +3,6 @@ const Comment = require('../models/commentSchema'); // Import the Comment model
 const Video = require('../models/videoSchema'); // Import the Video model
 const VideoService = require('./videoService'); // Import the video service
 const bcrypt = require('bcryptjs');
-const { get } = require('mongoose');
 
 // Create a new user
 const createUser = async (userData) => {
@@ -88,11 +87,11 @@ const deleteUser = async (username) => {
       await Comment.deleteMany({ uploader: username });
   
       // Delete user
-      const user = await User.findOneAndDelete({ username });
+      const user = await User.findOne({ username: username });
       if (!user) {
         throw new Error('User not found');
       }
-  
+      await user.deleteOne();
       return user;
     } catch (error) {
       throw new Error(`Error deleting user: ${error.message}`);
