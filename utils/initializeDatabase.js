@@ -161,8 +161,6 @@ async function initializeDatabase() {
         const userCount = await User.countDocuments();
         if (userCount === 0) {
             for (const userData of initialUsers) {
-                const hashedPassword = await bcrypt.hash(userData.password, 10); // Hash the password
-                userData.password = hashedPassword;
                 await UserService.createUser(userData); // Use the createUser function from the user service
             }
             console.log("Initial users inserted.");

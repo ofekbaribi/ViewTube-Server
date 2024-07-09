@@ -58,7 +58,13 @@ const updatePassword = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
       const { username } = req.params;
-  
+      const { password } = req.body;
+
+      const user = await UserService.authenticateUser(username, password);
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid password' });
+      }
+
       // Delete user logic
       const deletedUser = await UserService.deleteUser(username);
       if (!deletedUser) {
