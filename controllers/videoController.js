@@ -63,4 +63,13 @@ const addViewCount = async (req, res) => {
     res.json(video);
 };
 
-module.exports = {createVideo, getVideos, getVideo, updateVideo, deleteVideo, userLiked, addViewCount};
+const getHotVideos = async (req, res) => {
+    try {
+        const videos = await videoService.getHotVideos();
+        res.json(videos);
+    } catch (error) {
+        res.status(500).json({ errors: [error.message] });
+    }
+};
+
+module.exports = {createVideo, getVideos, getVideo, updateVideo, deleteVideo, userLiked, addViewCount, getHotVideos};

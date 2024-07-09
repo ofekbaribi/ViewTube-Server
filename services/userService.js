@@ -3,6 +3,7 @@ const Comment = require('../models/commentSchema'); // Import the Comment model
 const Video = require('../models/videoSchema'); // Import the Video model
 const VideoService = require('./videoService'); // Import the video service
 const bcrypt = require('bcryptjs');
+const { get } = require('mongoose');
 
 // Create a new user
 const createUser = async (userData) => {
@@ -10,6 +11,8 @@ const createUser = async (userData) => {
     // Hash the password before saving the user
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     userData.password = hashedPassword;
+    userData.firstName = userData.firstName.charAt(0).toUpperCase() + userData.firstName.slice(1);
+    userData.lastName = userData.lastName.charAt(0).toUpperCase() + userData.lastName.slice(1);
 
     const user = new User(userData);
     await user.save();
@@ -62,8 +65,8 @@ const updateUser = async (username, firstName, lastName) => {
     if (!user) {
       throw new Error('User not found');
     }
-    user.firstName = firstName;
-    user.lastName = lastName;
+    user.firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+    user.lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1);
     await user.save();
     console.log("service: ", user);
     return user;
@@ -133,6 +136,15 @@ const updatePassword = async (username, newPassword) => {
   }
 };
 
+const getVideosByUploader = async (uploader) => {
+  try {
+    const videos = await Video.find({ uploader: uploader });
+    return videos;
+  } catch (error) {
+    throw new Error(`Error fetching videos by uploader: ${error.message}`);
+  }
+};
+
 module.exports = {
   createUser,
   authenticateUser,
@@ -142,4 +154,5 @@ module.exports = {
   checkUsernameExists,
   getPictureByUsername,
   updatePassword,
+  getVideosByUploader,
 };

@@ -98,6 +98,16 @@ const checkUsernameExists = async (req, res) => {
     }
   };
 
+  const getVideosByUploader = async (req, res) => {
+    try {
+      const uploader = req.params.id;
+      const videos = await UserService.getVideosByUploader(uploader);
+      res.status(200).json(videos);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
 module.exports = {
   createUser, 
   getUserByUsername, 
@@ -106,4 +116,5 @@ module.exports = {
   checkUsernameExists,
   getPictureByUsername,
   updatePassword,
+  getVideosByUploader,
 };

@@ -10,5 +10,5 @@ router.put('/:username', UserController.updateUser); // Updates the user details
 router.delete('/:username', UserController.deleteUser); // Deletes the user account
 router.get('/:username', UserController.getUserByUsername); // Get the user details for the profile page
 router.post('/password', UserController.updatePassword); // Updates the user password
-
+router.get('/:id/videos', UserController.getVideosByUploader); // Get the videos uploaded by a user
 module.exports = router;
