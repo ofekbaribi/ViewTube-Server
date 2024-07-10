@@ -2,120 +2,231 @@ const Video = require('../models/videoSchema');
 const User = require('../models/userSchema'); 
 const { formatDate } = require('../services/videoService');
 const UserService = require('../services/userService'); // Import the user service
-const bcrypt = require('bcrypt'); // Ensure bcrypt is available for password hashing
 
 const initialVideos = [
-    {
-        id: 1,
-        title: "Mallorca sunrise summer vibes - KYGO, Lost Frequencies",
-        description: "Dancing cats",
-        uploader: "ofekbaribi",
-        views: 460,
-        likes: 6,
-        date: formatDate("2020-04-26"),
-        duration: 5083,
-        videoUrl: "/media/feel.mp4"
-    },
-    {   
-        id: 2,
-        title: "Feel So Close x Roses x Summer x I Love It MASHUP",
-        description: "Summer Mashup Vol.1 (Feel so Close Hudszn Remix)",
-        uploader: "zivelbaz",
-        views: 100,
-        likes: 354,
-        date: formatDate("2021-05-26"),
-        duration: 4223,
-        videoUrl: "/media/deep.mp4"
-    },
-    {
-        id: 3,
-        title: "Harbu Darbu (Prod. By Stilla)",
-        description: "harbu darbu",
-        uploader: "yuvalmaaravi",
-        views: 40,
-        likes: 200,
-        date: formatDate("2021-05-26"),
-        duration: 3159,
-        videoUrl: "/media/video2.mp4"
-    },
-    {
-        id: 4,
-        title: "AM I WRONG || REMIX 2024",
-        description: "check this🔥",
-        uploader: "oren_lahav",
-        views: 999,
-        likes: 200,
-        date: formatDate("2021-05-26"),
-        duration: 4223,
-        videoUrl: "/media/wrong.mp4"
-    },
-    {
-        id: 5,
-        title: "Jonas Blue, Galantis, Zoe Wees - Mountains (Official Audio)",
-        description: "Jonas Blue, Galantis, Zoe Wees - Mountains (Official Lyric Video)",
-        uploader: "zivelbaz",
-        views: 111,
-        likes: 1111,
-        date: formatDate("2021-11-11"),
-        duration: 4271,
-        videoUrl: "/media/mountains.mp4"
-    },
-    {
-        id: 6,
-        title: "Payphone - Maroon 5 (Lyrics - No rap)",
-        description: "Jonas Blue, Galantis, Zoe Wees - Mountains (Official Lyric Video)",
-        uploader: "ofekbaribi",
-        views: 106,
-        likes: 124,
-        date: formatDate("2024-01-19"),
-        duration: 191,
-        videoUrl: "/media/payphone.mp4"
-    },
-    {
-        id: 7,
-        title: "Calvin Harris - Summer (Lyrics)",
-        description: "🎵 Follow the official 7clouds playlist on Spotify : http://spoti.fi/2SJsUcZ 🎧 Calvin Harris - Summer (Lyrics)⏬ Download / Stream: https://open.spotify.com/track/6YUTL4...🔔 Turn on notifications to stay updated with new uploads!",
-        uploader: "yuvalmaaravi",
-        views: 106,
-        likes: 124,
-        date: formatDate("2024-01-19"),
-        duration: 191,
-        videoUrl: "/media/summer.mp4"
-    },
-    {
-        id: 8,
-        title: "Wake Me Up x Beautiful life remix",
-        description: "🎵 Follow the official 7clouds playlist on Spotify ",
-        uploader: "oren_lahav",
-        views: 106,
-        likes: 124,
-        date: formatDate("2024-01-19"),
-        duration: 191,
-        videoUrl: "/media/wake.mp4"
-    },
-    {
-        id: 9,
-        title: "Whistle - Flo Rida [Vietsub + Lyrics]",
-        description: "🎵 Follow the official 7clouds playlist on Spotify ",
-        uploader: "zivelbaz",
-        views: 106,
-        likes: 124,
-        date: formatDate("2024-01-19"),
-        duration: 191,
-        videoUrl: "/media/whistle.mp4"
-    },
-    {
-        id: 10,
-        title: "Pantropiko x Shape of You remix",
-        description: "🎵 Follow the official 7clouds playlist on Spotify ",
-        uploader: "ofekbaribi",
-        views: 106,
-        likes: 124,
-        date: formatDate("2024-01-19"),
-        duration: 191,
-        videoUrl: "/media/shape.mp4"
-    }
-];
+        {
+            id: 1,
+            title: "Mallorca sunrise summer vibes - KYGO, Lost Frequencies",
+            description: "Dancing cats",
+            uploader: "ofekbaribi",
+            views: 460,
+            likes: 6,
+            date: formatDate("2020-04-26"),
+            duration: 5083,
+            videoUrl: "/media/feel.mp4"
+        },
+        {   
+            id: 2,
+            title: "Feel So Close x Roses x Summer x I Love It MASHUP",
+            description: "Summer Mashup Vol.1 (Feel so Close Hudszn Remix)",
+            uploader: "zivelbaz",
+            views: 100,
+            likes: 354,
+            date: formatDate("2021-05-26"),
+            duration: 4223,
+            videoUrl: "/media/deep.mp4"
+        },
+        {
+            id: 3,
+            title: "Harbu Darbu (Prod. By Stilla)",
+            description: "harbu darbu",
+            uploader: "yuvalmaaravi",
+            views: 40,
+            likes: 200,
+            date: formatDate("2021-05-26"),
+            duration: 3159,
+            videoUrl: "/media/video2.mp4"
+        },
+        {
+            id: 4,
+            title: "AM I WRONG || REMIX 2024",
+            description: "check this🔥",
+            uploader: "oren_lahav",
+            views: 999,
+            likes: 200,
+            date: formatDate("2021-05-26"),
+            duration: 4223,
+            videoUrl: "/media/wrong.mp4"
+        },
+        {
+            id: 5,
+            title: "Jonas Blue, Galantis, Zoe Wees - Mountains (Official Audio)",
+            description: "Jonas Blue, Galantis, Zoe Wees - Mountains (Official Lyric Video)",
+            uploader: "zivelbaz",
+            views: 111,
+            likes: 1111,
+            date: formatDate("2021-11-11"),
+            duration: 4271,
+            videoUrl: "/media/mountains.mp4"
+        },
+        {
+            id: 6,
+            title: "Payphone - Maroon 5 (Lyrics - No rap)",
+            description: "Jonas Blue, Galantis, Zoe Wees - Mountains (Official Lyric Video)",
+            uploader: "ofekbaribi",
+            views: 106,
+            likes: 124,
+            date: formatDate("2024-01-19"),
+            duration: 191,
+            videoUrl: "/media/payphone.mp4"
+        },
+        {
+            id: 7,
+            title: "Calvin Harris - Summer (Lyrics)",
+            description: "🎵 Follow the official 7clouds playlist on Spotify : http://spoti.fi/2SJsUcZ 🎧 Calvin Harris - Summer (Lyrics)⏬ Download / Stream: https://open.spotify.com/track/6YUTL4...🔔 Turn on notifications to stay updated with new uploads!",
+            uploader: "yuvalmaaravi",
+            views: 106,
+            likes: 124,
+            date: formatDate("2024-01-19"),
+            duration: 191,
+            videoUrl: "/media/summer.mp4"
+        },
+        {
+            id: 8,
+            title: "Wake Me Up x Beautiful life remix",
+            description: "🎵 Follow the official 7clouds playlist on Spotify ",
+            uploader: "oren_lahav",
+            views: 106,
+            likes: 124,
+            date: formatDate("2024-01-19"),
+            duration: 191,
+            videoUrl: "/media/wake.mp4"
+        },
+        {
+            id: 9,
+            title: "Whistle - Flo Rida [Vietsub + Lyrics]",
+            description: "🎵 Follow the official 7clouds playlist on Spotify ",
+            uploader: "zivelbaz",
+            views: 106,
+            likes: 124,
+            date: formatDate("2024-01-19"),
+            duration: 191,
+            videoUrl: "/media/whistle.mp4"
+        },
+        {
+            id: 10,
+            title: "Pantropiko x Shape of You remix",
+            description: "🎵 Follow the official 7clouds playlist on Spotify ",
+            uploader: "ofekbaribi",
+            views: 106,
+            likes: 124,
+            date: formatDate("2024-01-19"),
+            duration: 191,
+            videoUrl: "/media/shape.mp4"
+        },
+        {
+            id: 11,
+            title: "Stromae - papaoutai (Official Video)",
+            description: "Official music video for Stromae's hit song 'Papaoutai'.",
+            uploader: "ofekbaribi",
+            views: 729,
+            likes: 12,
+            date: formatDate("2024-07-09"),
+            duration: 2339,
+            videoUrl: "/media/Stromae - papaoutai (Official Video).mp4"
+        },
+        {
+            id: 12,
+            title: "Dennis Lloyd - Leftovers _ A COLORS SHOW",
+            description: "Dennis Lloyd performing 'Leftovers' live at COLORS SHOW.",
+            uploader: "zivelbaz",
+            views: 845,
+            likes: 62,
+            date: formatDate("2024-07-09"),
+            duration: 2338,
+            videoUrl: "/media/Dennis Lloyd - Leftovers _ A COLORS SHOW.mp4"
+        },
+        {
+            id: 13,
+            title: "Ash - Mosaïque (Live at The Pyramids)",
+            description: "Ash performing 'Mosaïque' live at The Pyramids.",
+            uploader: "yuvalmaaravi",
+            views: 25,
+            likes: 3,
+            date: formatDate("2024-07-09"),
+            duration: 2734,
+            videoUrl: "/media/Ash - Mosaïque (Live at The Pyramids).mp4"
+        },
+        {
+            id: 14,
+            title: "Bob Sinclar - Love Generation",
+            description: "Official music video for Bob Sinclar's 'Love Generation'.",
+            uploader: "ofekbaribi",
+            views: 158,
+            likes: 26,
+            date: formatDate("2024-07-09"),
+            duration: 2338,
+            videoUrl: "/media/Bob Sinclar - Love Generation.mp4"
+        },
+        {
+            id: 15,
+            title: "Corona Extra_ A Journey by Taylor Steele - From Where You'd Rather Be",
+            description: "A journey to a better place with Taylor Steele and Corona Extra.",
+            uploader: "zivelbaz",
+            views: 1556,
+            likes: 488,
+            date: formatDate("2024-07-09"),
+            duration: 2320,
+            videoUrl: "/media/Corona Extra_ A Journey by Taylor Steele - From Where You'd Rather Be.mp4"
+        },
+        {
+            id: 16,
+            title: "Empire of the Sun - We Are The People (Official Video)",
+            description: "Empire of the Sun's official music video for 'We Are The People'.",
+            uploader: "yuvalmaaravi",
+            views: 751,
+            likes: 266,
+            date: formatDate("2024-07-09"),
+            duration: 3111,
+            videoUrl: "/media/Empire of the Sun - We Are The People (Official Video).mp4"
+        },
+        {
+            id: 17,
+            title: "Katy Perry - Roar",
+            description: "Official music video for Katy Perry's 'Roar'.",
+            uploader: "ofekbaribi",
+            views: 214,
+            likes: 151,
+            date: formatDate("2024-07-09"),
+            duration: 2729,
+            videoUrl: "/media/Katy Perry - Roar.mp4"
+        },
+        {
+            id: 18,
+            title: "MACKLEMORE & RYAN LEWIS - THRIFT SHOP FEAT. WANZ (OFFICIAL VIDEO)",
+            description: "Macklemore and Ryan Lewis's 'Thrift Shop' official music video.",
+            uploader: "zivelbaz",
+            views: 33,
+            likes: 2,
+            date: formatDate("2024-07-09"),
+            duration: 2332,
+            videoUrl: "/media/MACKLEMORE & RYAN LEWIS - THRIFT SHOP FEAT. WANZ (OFFICIAL VIDEO).mp4"
+        },
+        {
+            id: 19,
+            title: "Wiz Khalifa - See You Again ft. Charlie Puth [Official Video] Furious 7 Soundtrack",
+            description: "Official music video for Wiz Khalifa's 'See You Again' featuring Charlie Puth from Furious 7 soundtrack.",
+            uploader: "yuvalmaaravi",
+            views: 144,
+            likes: 66,
+            date: formatDate("2024-07-09"),
+            duration: 2337,
+            videoUrl: "/media/Wiz Khalifa - See You Again ft. Charlie Puth [Official Video] Furious 7 Soundtrack.mp4"
+        },
+        {
+            id: 20,
+            title: "Fun. We Are Young ft. Janelle Monáe [OFFICIAL VIDEO]",
+            description: "Official music video for 'We Are Young' by Fun. featuring Janelle Monáe.",
+            uploader: "ofekbaribi",
+            views: 966,
+            likes: 235,
+            date: formatDate("2024-07-09"),
+            duration: 2532,
+            videoUrl: "/media/Fun._ We Are Young ft. Janelle Monáe [OFFICIAL VIDEO].mp4"
+        }
+    ];
+    
+
 
 const initialUsers = [
     {

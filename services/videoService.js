@@ -26,9 +26,6 @@ const getVideoById = async (id) => {
     return await Video.findOne({id: id});
 };
 
-const getVideosByUploader = async (uploader) => {
-    return await Video.find({uploader: uploader});
-};
 
 const updateVideo = async (id, title, description) => {
     const video = await getVideoById(id);   
@@ -99,4 +96,38 @@ const addViewCount = async (id) => {
     return video;
 };
 
-module.exports = {createVideo, getVideoById, getVideosByUploader, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount };
+const getHotVideos = async () => {
+    try {
+        const videos = await getVideos();
+        if (videos.length <= 10) {
+            return await shuffleArray(videos);
+        }
+
+        // Get the top 10 most viewed videos
+        const hotVideos = videos.sort((a, b) => b.views - a.views).slice(0, 10);
+        // Get the remaining videos excluding the top 10 most viewed
+        const remainingVideos = videos.filter(video => !hotVideos.includes(video));
+        // Shuffle the remaining videos
+        const shuffledRemainingVideos = await shuffleArray(remainingVideos);
+        // Get 10 random videos from the remaining ones
+        const randomVideos = shuffledRemainingVideos.slice(0, Math.min(10, shuffledRemainingVideos.length));
+        // Combine the hot and random videos
+        const combinedVideos = [...hotVideos, ...randomVideos];
+        // Shuffle the combined list before returning
+        return await shuffleArray(combinedVideos);
+    } catch (error) {
+        throw new Error(`Error fetching hot videos: ${error.message}`);
+    }
+};
+
+// Function to shuffle an array using the Fisher-Yates algorithm
+function shuffleArray(array) {
+    const shuffledArray = array.slice(); // Create a copy to avoid mutating the original array
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]; // Swap elements
+    }
+    return shuffledArray;
+}
+
+module.exports = {createVideo, getVideoById, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount, getHotVideos };

@@ -39,4 +39,7 @@ router.route('/:id/like')
 router.route('/:id/view')
     .patch(videoController.addViewCount);
 
+router.route('/hot/videos')
+    .get(videoController.getHotVideos);
+
 module.exports = router;
