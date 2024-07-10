@@ -27,10 +27,12 @@ const getUserByUsername = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const username = req.params.username;
-    const { firstName, lastName } = req.body;
-    console.log(username, firstName, lastName);
+    const { firstName, lastName, image } = req.body;
     const user = await UserService.updateUser(username, firstName, lastName);
-    console.log("controller: ", user);
+    if (image) {
+      const updatedImageUser = await UserService.updateProfilePicture(username, image);
+      user.image = updatedImageUser.image;
+    }
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -3,7 +3,6 @@ const Comment = require('../models/commentSchema'); // Import the Comment model
 const Video = require('../models/videoSchema'); // Import the Video model
 const VideoService = require('./videoService'); // Import the video service
 const bcrypt = require('bcryptjs');
-const { get } = require('mongoose');
 
 // Create a new user
 const createUser = async (userData) => {
@@ -68,7 +67,6 @@ const updateUser = async (username, firstName, lastName) => {
     user.firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
     user.lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1);
     await user.save();
-    console.log("service: ", user);
     return user;
   } catch (error) {
     throw new Error(`Error updating user: ${error.message}`);
@@ -145,6 +143,18 @@ const getVideosByUploader = async (uploader) => {
   }
 };
 
+const updateProfilePicture = async (username, image) => {
+  try {
+    const user = await User.findOne({ username });
+    user.image = image;
+    await user.save();
+    user.password = null;
+    return user;
+  } catch (error) {
+    throw new Error(`Error updating profile picture: ${error.message}`);
+  }
+};
+
 module.exports = {
   createUser,
   authenticateUser,
@@ -155,4 +165,5 @@ module.exports = {
   getPictureByUsername,
   updatePassword,
   getVideosByUploader,
+  updateProfilePicture
 };
