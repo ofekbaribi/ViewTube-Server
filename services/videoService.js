@@ -27,6 +27,10 @@ const getVideoById = async (id) => {
     return await Video.findOne({id: id});
 };
 
+const getVideosByUploader = async (uploader) => {
+    return await Video.find({uploader: uploader});
+};
+
 
 const updateVideo = async (id, title, description) => {
     const video = await getVideoById(id);   
@@ -131,4 +135,4 @@ function shuffleArray(array) {
     return shuffledArray;
 }
 
-module.exports = {createVideo, getVideoById, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount, getHotVideos };
+module.exports = {createVideo, getVideoById, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount, getHotVideos, getVideosByUploader };
