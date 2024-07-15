@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const Comment = require('../models/commentSchema');
 
-const createVideo = async (title, description, uploader, duration, videoUrl) => {
+const createVideo = async (title, description, uploader, duration, videoUrl, thumbnailUrl) => {
     const maxId = await getMaxVideoId() + 1;
     const todayDateString = formatDate(new Date());
     const video = new Video({
@@ -13,10 +13,11 @@ const createVideo = async (title, description, uploader, duration, videoUrl) => 
         uploader: uploader,
         duration: duration,
         date: todayDateString,
-        videoUrl: `/uploads/${videoUrl.split('\\')[videoUrl.split('\\').length - 1]}`
+        videoUrl: `/uploads/${videoUrl.split('\\')[videoUrl.split('\\').length - 1]}`,
+        thumbnail: `/uploads/thumbnails/${thumbnailUrl.split('\\')[thumbnailUrl.split('\\').length - 1]}`
     });
     return await video.save();
-}
+};
 
 const getVideos = async () => { 
     return await Video.find({}); 

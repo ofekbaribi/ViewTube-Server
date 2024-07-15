@@ -5,18 +5,34 @@ const path = require('path');
 const fs = require('fs');
 
 // Ensure the uploads directory exists
-const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-    console.log('Created uploads directory');
+const videosDir = path.join(__dirname, '..', 'public', 'uploads');
+const thumbnailsDir = path.join(__dirname, '..', 'public', 'uploads', 'thumbnails');
+
+if (!fs.existsSync(videosDir)) {
+    fs.mkdirSync(videosDir, { recursive: true });
+    console.log('Created videos directory');
+}
+
+if (!fs.existsSync(thumbnailsDir)) {
+    fs.mkdirSync(thumbnailsDir, { recursive: true });
+    console.log('Created thumbnails directory');
 }
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadsDir); // Save videos in the 'public/uploads' directory
+        if (file.fieldname === 'videoFile') {
+            cb(null, videosDir); // Save videos in the 'public/uploads' directory
+        } else if (file.fieldname === 'thumbnail') {
+            cb(null, thumbnailsDir); // Save thumbnails in the 'public/uploads/thumbnails' directory
+        }
     },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`); // Generate a unique filename
+     filename: (req, file, cb) => {
+        if (file.fieldname === 'videoFile') {
+            cb(null, `${Date.now()}-${file.originalname}`); // Keep the original video filename with a timestamp
+        } else if (file.fieldname === 'thumbnail') {
+            console.log(file.originalname);
+            cb(null, `${Date.now()}-${file.originalname}`); // Format thumbnail filename
+        }
     },
 });
 
@@ -25,13 +41,11 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 
 router.route('/')
-    .get(videoController.getVideos)
-    .post(upload.single('videoFile'), videoController.createVideo);
-
-router.route('/:id')
-    .get(videoController.getVideo)
-    .patch(videoController.updateVideo)
-    .delete(videoController.deleteVideo);
+    .get(videoController.getHotVideos)
+    .post(upload.fields([
+        { name: 'videoFile', maxCount: 1 },
+        { name: 'thumbnail', maxCount: 1 }
+    ]), videoController.createVideo);
 
 router.route('/:id/like')
     .post(videoController.userLiked);
@@ -39,7 +53,7 @@ router.route('/:id/like')
 router.route('/:id/view')
     .patch(videoController.addViewCount);
 
-router.route('/hot/videos')
-    .get(videoController.getHotVideos);
+router.route('/all')
+    .get(videoController.getVideos);
 
 module.exports = router;
