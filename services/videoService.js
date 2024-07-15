@@ -52,9 +52,15 @@ const deleteVideo = async (id) => {
     await Comment.deleteMany({ videoId: id });
 
     const videoPath = path.join(__dirname, '..', 'public', video.videoUrl);
+    const thumbnailPath = path.join(__dirname, '..', 'public', video.thumbnail);
     fs.unlink(videoPath, (err) => {
         if (err) {
             console.error('Error deleting video file:', err);
+        }
+    });
+    fs.unlink(thumbnailPath, (err) => {
+        if (err) {
+            console.error('Error deleting thumbnail file:', err);
         }
     });
 
