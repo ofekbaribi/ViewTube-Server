@@ -42,6 +42,10 @@ const Video = new Schema({
     videoUrl: {
         type: String,
         required: true
+    },
+    thumbnail: {
+        type: String,
+        required: true
     }
 });
 
