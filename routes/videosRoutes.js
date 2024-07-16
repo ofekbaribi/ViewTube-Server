@@ -9,15 +9,16 @@ const videosDir = path.join(__dirname, '..', 'public', 'uploads');
 const thumbnailsDir = path.join(__dirname, '..', 'public', 'uploads', 'thumbnails');
 
 if (!fs.existsSync(videosDir)) {
-    fs.mkdirSync(videosDir, { recursive: true });
+    fs.mkdirSync(videosDir, { recursive: true }); // Create 'public/uploads' directory recursively if it doesn't exist
     console.log('Created videos directory');
 }
 
 if (!fs.existsSync(thumbnailsDir)) {
-    fs.mkdirSync(thumbnailsDir, { recursive: true });
+    fs.mkdirSync(thumbnailsDir, { recursive: true }); // Create 'public/uploads/thumbnails' directory recursively if it doesn't exist
     console.log('Created thumbnails directory');
 }
 
+// Multer storage configuration for saving uploaded files
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'videoFile') {
@@ -26,33 +27,34 @@ const storage = multer.diskStorage({
             cb(null, thumbnailsDir); // Save thumbnails in the 'public/uploads/thumbnails' directory
         }
     },
-     filename: (req, file, cb) => {
+    filename: (req, file, cb) => {
         if (file.fieldname === 'videoFile') {
-            cb(null, `${Date.now()}-${file.originalname}`); // Keep the original video filename with a timestamp
+            cb(null, `${Date.now()}-${file.originalname}`); // Keep the original video filename with a timestamp prefix
         } else if (file.fieldname === 'thumbnail') {
-            cb(null, `${Date.now()}-${file.originalname}`); // Format thumbnail filename
+            cb(null, `${Date.now()}-${file.originalname}`); // Format thumbnail filename with a timestamp prefix
         }
     },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }); // Multer instance with configured storage
 
-const router = express.Router();
+const router = express.Router(); // Create a new router instance
 
+// Route definitions with corresponding controller methods
 router.route('/')
-    .get(videoController.getHotVideos)
+    .get(videoController.getHotVideos) // GET request to fetch hot videos
     .post(upload.fields([
-        { name: 'videoFile', maxCount: 1 },
-        { name: 'thumbnail', maxCount: 1 }
-    ]), videoController.createVideo);
+        { name: 'videoFile', maxCount: 1 }, // Upload single video file
+        { name: 'thumbnail', maxCount: 1 } // Upload single thumbnail file
+    ]), videoController.createVideo); // POST request to create a new video
 
 router.route('/:id/like')
-    .post(videoController.userLiked);
+    .post(videoController.userLiked); // POST request to toggle user like on a video by ID
 
 router.route('/:id/view')
-    .patch(videoController.addViewCount);
+    .patch(videoController.addViewCount); // PATCH request to increment view count of a video by ID
 
 router.route('/all')
-    .get(videoController.getVideos);
-
+    .get(videoController.getVideos); // GET request to fetch all videos
+    
 module.exports = router;

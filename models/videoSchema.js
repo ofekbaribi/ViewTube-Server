@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema; // Create a reference to the Schema constructor
 
+// Define the Video schema
 const Video = new Schema({
     id: {
         type: Number,

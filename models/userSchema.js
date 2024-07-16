@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const { Schema } = mongoose; // Create a reference to the Schema constructor
 
+// Define the User schema
 const userSchema = new Schema({
     username: { 
         type: String, 

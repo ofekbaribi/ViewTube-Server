@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema; // Create a reference to the Schema constructor
 
+// Define the Comment schema
 const CommentSchema = new Schema({
   id: {
     type: Number,
