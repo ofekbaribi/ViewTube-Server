@@ -30,7 +30,6 @@ const storage = multer.diskStorage({
         if (file.fieldname === 'videoFile') {
             cb(null, `${Date.now()}-${file.originalname}`); // Keep the original video filename with a timestamp
         } else if (file.fieldname === 'thumbnail') {
-            console.log(file.originalname);
             cb(null, `${Date.now()}-${file.originalname}`); // Format thumbnail filename
         }
     },

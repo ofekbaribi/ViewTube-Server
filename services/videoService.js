@@ -27,6 +27,10 @@ const getVideoById = async (id) => {
     return await Video.findOne({id: id});
 };
 
+const getVideosByUploader = async (uploader) => {
+    return await Video.find({uploader: uploader});
+};
+
 
 const updateVideo = async (id, title, description) => {
     const video = await getVideoById(id);   
@@ -48,9 +52,15 @@ const deleteVideo = async (id) => {
     await Comment.deleteMany({ videoId: id });
 
     const videoPath = path.join(__dirname, '..', 'public', video.videoUrl);
+    const thumbnailPath = path.join(__dirname, '..', 'public', video.thumbnail);
     fs.unlink(videoPath, (err) => {
         if (err) {
             console.error('Error deleting video file:', err);
+        }
+    });
+    fs.unlink(thumbnailPath, (err) => {
+        if (err) {
+            console.error('Error deleting thumbnail file:', err);
         }
     });
 
@@ -131,4 +141,4 @@ function shuffleArray(array) {
     return shuffledArray;
 }
 
-module.exports = {createVideo, getVideoById, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount, getHotVideos };
+module.exports = {createVideo, getVideoById, getVideos, updateVideo, deleteVideo, formatDate, userLiked, addViewCount, getHotVideos, getVideosByUploader };
