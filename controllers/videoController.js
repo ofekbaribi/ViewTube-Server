@@ -1,4 +1,7 @@
 const videoService = require('../services/videoService');
+const User = require('../models/userSchema');
+const { connectToTCPServer } = require('../services/tcpClient');
+
 
 const createVideo = async (req, res) => {
     try {
@@ -61,9 +64,14 @@ const deleteVideo = async (req, res) => {
 
 const addViewCount = async (req, res) => {
     const video = await videoService.addViewCount(req.params.id);
+    const {username} = req.body;
+    console.log(username);
     if (!video) {
         return res.status(404).json({ errors: ['Video not found'] });
     }
+
+    // Send video title to the TCP server
+    connectToTCPServer(video.id, username);  
     res.json(video);
 };
 
