@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const {connectToTCPServer } = require('./services/tcpClient');
 
 var app = express();
 
@@ -9,6 +10,7 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
   console.log('Created uploads directory');
 }
+
 
 const bodyParser = require('body-parser');
 
